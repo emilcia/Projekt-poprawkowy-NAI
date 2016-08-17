@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <script type="application/javascript">
+    function draw() {
+      var canvas = document.getElementById("canvas");
+      if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "rgb(162,115,164)";
+        ctx.fillRect (0, 0, 320, 320);
+          
+          drawwalls();
+          getColor();
+      
+          function drawwalls() {
+              
+              for(var licznik=0; licznik<=15; licznik++)
+                    {
+          var x = Math.floor(((Math.random() * 320) + 1)/32);
+          var y = Math.floor(((Math.random() * 320) + 1)/32);
+
+              
+           ctx.fillStyle = "rgb(0,0,0)";
+        ctx.fillRect (x*32, y*32, 32, 32);
+                    }
+          
+          }
+          
+          function getColor() {
+              
+                var liczba = 0;
+              for (var licznik=0; licznik<=10; licznik++)
+                  {
+                      for(var licznikY=0; licznikY<=10; licznikY++)
+                          {
+                        ctx.moveTo(licznik*32, licznikY*32)
+                    
+                  if(ctx.fillStyle = "rgb(0,0,0)")
+                      {
+                          liczba++;
+                      }
+                      }
+                  }
+              console.log(liczba);
+          }
+                         
+
+      }
+    }
+  </script>
+ </head>
+ <body>
+     <p onclick="draw()">Kliknij!</p>
+
+   <canvas id="canvas" width="320" height="320">
+</canvas>
+ </body>
+</html>
