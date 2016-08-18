@@ -7,15 +7,26 @@
       var canvas = document.getElementById("canvas");
       if (canvas.getContext) {
         var ctx = canvas.getContext("2d");
-
-        ctx.fillStyle = "rgb(162,115,164)";
-        ctx.fillRect (0, 0, 320, 320);
           
-          drawwalls();
-          getColor();
+        ctx.fillStyle = "rgb(162,115,164)";
+       ctx.fillRect (0, 0, 320, 320);
+      }
+          
+          drawwalls();          
+       
       
           function drawwalls() {
               
+                var map = [];
+                  for (var x = 0; x < 10; x++) {
+                        map[x] = [];
+        for (var y = 0; y < 10; y++) 
+                map[x][y] = {'x':x, 'y':y, 'wall':0};                      
+            }
+
+                  //   console.log(map[5][5]);
+
+    
               for(var licznik=0; licznik<=15; licznik++)
                     {
           var x = Math.floor(((Math.random() * 320) + 1)/32);
@@ -24,31 +35,18 @@
               
            ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect (x*32, y*32, 32, 32);
+                         map[x][y] = {'x':x, 'y':y, 'wall':1};
                     }
-          
-          }
-          
-          function getColor() {
-              
-                var liczba = 0;
-              for (var licznik=0; licznik<=10; licznik++)
-                  {
-                      for(var licznikY=0; licznikY<=10; licznikY++)
-                          {
-                        ctx.moveTo(licznik*32, licznikY*32)
-                    
-                  if(ctx.fillStyle = "rgb(0,0,0)")
-                      {
-                          liczba++;
-                      }
-                      }
-                  }
-              console.log(liczba);
-          }
-                         
+                       
+                console.log(map[x][y]);
 
-      }
+
+                    }
+
     }
+    
+
+    
   </script>
  </head>
  <body>
