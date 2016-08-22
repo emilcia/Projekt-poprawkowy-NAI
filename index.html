@@ -29,36 +29,22 @@
               for(var licznik=0; licznik<=15; licznik++)
                     {
                       
-          var x = Math.floor(((Math.random() * 320) + 1)/32);
-          var y = Math.floor(((Math.random() * 320) + 1)/32); 
+          var x = Math.floor(((Math.random() * 319) + 0)/32);
+          var y = Math.floor(((Math.random() * 319) + 0)/32); 
                         
                      
            ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect (x*32, y*32, 32, 32);
                          map[x][y] = {'x':x, 'y':y, 'wall':1};
                             
-                 /*  var licznikWall=0;  
-             while((licznik==15) && (licznikWall<=30))
-                            {
-          x = Math.floor(((Math.random() * 320) + 1)/32);
-          y = Math.floor(((Math.random() * 320) + 1)/32);
-                     licznikWall++;
-                                if(map[x][y].wall=0)
-                                    {
-                                        ctx.fillStyle = "rgb(10,50,60)";
-                                        ctx.fillRect (x*32, y*32, 32, 32);
-                                        map[x][y] = {'x':x, 'y':y, 'wall':1};
-                                        break;
-                                    }
-                            }*/
+
                     }
               console.log(map[x][y]);
               var start = {};
-            //  var licznikWall = 0;
               while(map[x][y].wall==1)
                   {
-        x = Math.floor(((Math.random() * 320) + 1)/32);
-        y = Math.floor(((Math.random() * 320) + 1)/32); 
+        x = Math.floor(((Math.random() * 319) + 0)/32);
+        y = Math.floor(((Math.random() * 319) + 0)/32); 
                   }
               ctx.fillStyle = "rgb(10,50,60)";
               ctx.fillRect (x*32, y*32, 32, 32);
@@ -66,8 +52,13 @@
               
           }
     }
-            
-    
+          function Heuristic(pos0, pos1) {
+        var dlX = Math.abs(pos1.x - pos0.x);
+        var dlY = Math.abs(pos1.y - pos0.y);
+     var length = Math.floor(Math.sqrt((dlX * dlX) + (dlY * dlY)));
+        return length;      
+      
+          }
     
   </script>
  </head>
