@@ -12,7 +12,8 @@
        ctx.fillRect (0, 0, 320, 320);
       }
           
-          drawwalls();          
+          drawwalls();
+        
        
       
           function drawwalls() {
@@ -24,28 +25,49 @@
                 map[x][y] = {'x':x, 'y':y, 'wall':0};                      
             }
 
-                  //   console.log(map[5][5]);
-
     
               for(var licznik=0; licznik<=15; licznik++)
                     {
+                      
           var x = Math.floor(((Math.random() * 320) + 1)/32);
-          var y = Math.floor(((Math.random() * 320) + 1)/32);
-
-              
+          var y = Math.floor(((Math.random() * 320) + 1)/32); 
+                        
+                     
            ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillRect (x*32, y*32, 32, 32);
                          map[x][y] = {'x':x, 'y':y, 'wall':1};
+                            
+                 /*  var licznikWall=0;  
+             while((licznik==15) && (licznikWall<=30))
+                            {
+          x = Math.floor(((Math.random() * 320) + 1)/32);
+          y = Math.floor(((Math.random() * 320) + 1)/32);
+                     licznikWall++;
+                                if(map[x][y].wall=0)
+                                    {
+                                        ctx.fillStyle = "rgb(10,50,60)";
+                                        ctx.fillRect (x*32, y*32, 32, 32);
+                                        map[x][y] = {'x':x, 'y':y, 'wall':1};
+                                        break;
+                                    }
+                            }*/
                     }
-                       
-                console.log(map[x][y]);
-
-
-                    }
-
+              console.log(map[x][y]);
+              var start = {};
+            //  var licznikWall = 0;
+              while(map[x][y].wall==1)
+                  {
+        x = Math.floor(((Math.random() * 320) + 1)/32);
+        y = Math.floor(((Math.random() * 320) + 1)/32); 
+                  }
+              ctx.fillStyle = "rgb(10,50,60)";
+              ctx.fillRect (x*32, y*32, 32, 32);
+             map[x][y] = {'x':start.x, 'y':start.y, 'wall':1};
+              
+          }
     }
+            
     
-
     
   </script>
  </head>
