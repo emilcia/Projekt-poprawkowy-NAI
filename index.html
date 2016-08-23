@@ -12,12 +12,6 @@
        ctx.fillRect (0, 0, 320, 320);
       }
           
-          drawwalls();
-        
-       
-      
-          function drawwalls() {
-              
                 var map = [];
                   for (var x = 0; x < 10; x++) {
                         map[x] = [];
@@ -46,19 +40,63 @@
         x = Math.floor(((Math.random() * 319) + 0)/32);
         y = Math.floor(((Math.random() * 319) + 0)/32); 
                   }
-              ctx.fillStyle = "rgb(10,50,60)";
+              ctx.fillStyle = "rgb(230,255,0)";
               ctx.fillRect (x*32, y*32, 32, 32);
-             map[x][y] = {'x':start.x, 'y':start.y, 'wall':1};
+             map[x][y] = {'x':start.x, 'y':start.y, 'wall':2};
+              
+              var end = {};
+              end.x = 1;
+              end.y = 1;
+                ctx.fillStyle = "rgb(51,0,255)";
+              ctx.fillRect (end.x*32, end.y*32, 32, 32);
+             map[x][y] = {'x':end.x, 'y':end.y, 'wall':3};
+              
               
           }
-    }
-          function Heuristic(pos0, pos1) {
+      
+          function heuristic(pos0, pos1) {
         var dlX = Math.abs(pos1.x - pos0.x);
         var dlY = Math.abs(pos1.y - pos0.y);
      var length = Math.floor(Math.sqrt((dlX * dlX) + (dlY * dlY)));
         return length;      
       
           }
+      
+    function neighbors(map, node) {
+        
+        var position = [];
+        x = node.x;
+        y = node.y;
+        
+         if (map[x - 1] && map[x - 1][y]) {
+        position.push(map[x - 1][y]);
+        }
+        if (map[x + 1] && map[x + 1][y]) {
+            position.push(map[x + 1][y]);
+        }
+        if (map[x][y - 1] && map[x][y - 1]) {
+            position.push(map[x][y - 1]);
+        }
+        if (map[x][y + 1] && map[x][y + 1]) {
+            pisition.push(map[x][y + 1]);
+        }
+        
+        return position;
+    }
+      
+      function pathFinding(map, start, end) {
+                    var open = [];
+                    var closed = [];
+                    open.push(map[start.x][start.y]);
+          
+                while(open.length>0)
+                    {
+                    var current = open.pop();
+                        closed.push(current);
+                    }
+          
+
+                }
     
   </script>
  </head>
