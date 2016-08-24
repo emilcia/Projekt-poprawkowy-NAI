@@ -62,22 +62,24 @@
       
           }
       
+     // draw();
+      
     function neighbors(map, node) {
         
         var position = [];
         x = node.x;
         y = node.y;
         
-         if (map[x - 1] && map[x - 1][y]) {
+         if (map[x - 1][y]) {
         position.push(map[x - 1][y]);
         }
-        if (map[x + 1] && map[x + 1][y]) {
+        if (map[x + 1][y]) {
             position.push(map[x + 1][y]);
         }
-        if (map[x][y - 1] && map[x][y - 1]) {
+        if (map[x][y - 1]) {
             position.push(map[x][y - 1]);
         }
-        if (map[x][y + 1] && map[x][y + 1]) {
+        if (map[x][y + 1]) {
             pisition.push(map[x][y + 1]);
         }
         
@@ -85,18 +87,33 @@
     }
       
       function pathFinding(map, start, end) {
-                    var open = [];
-                    var closed = [];
-                    open.push(map[start.x][start.y]);
           
-                while(open.length>0)
-                    {
-                    var current = open.pop();
-                        closed.push(current);
-                    }
+          var open = [];
+          var closed = [];
           
+          open.push(start);
+          var current = open(start);
+          current.f = 0;
+          
+          
+          var neighbors = neighbors(map, current)
+          
+          	for(var i=0; i<neighbors.length;i++) {
+				var neighbor = neighbors[i];
+				if(closed.neighbor || neighbor.wall==1) {
+					continue;
+				}
+                
+            var gscore = current.f+1;  
+            var hscore = heuristic(neighbor, end);
+             var fscore = gscore + hscore;
+                current = open.pop();
+                
+                
+            }
+      }
 
-                }
+                
     
   </script>
  </head>
