@@ -39,6 +39,8 @@
                   {
         x = Math.floor(((Math.random() * 319) + 0)/32);
         y = Math.floor(((Math.random() * 319) + 0)/32); 
+                      start.x=x;
+                      start.y=y;
                   }
               ctx.fillStyle = "rgb(230,255,0)";
               ctx.fillRect (x*32, y*32, 32, 32);
@@ -51,6 +53,7 @@
               ctx.fillRect (end.x*32, end.y*32, 32, 32);
              map[x][y] = {'x':end.x, 'y':end.y, 'wall':3};
               
+         pathFinding(map, start, end);
               
           }
       
@@ -92,10 +95,20 @@
           var closed = [];
           
           open.push(start);
-          var current = open(start);
-          current.f = 0;
+          map[start.x][start.y].f = 0;
           
+          while(open.length>0){
+              var best = 0;
+              for(var i=0; i<open.length; i++)
+              	if(open[i].f < open[best].f) { 
+                    
+                        best = i; 
+                }
+			}
+			var currentNode = open[best];
           
+                open.pop(currentNode);
+                closed.push(currentNode);
           var neighbors = neighbors(map, current)
           
           	for(var i=0; i<neighbors.length;i++) {
@@ -104,14 +117,21 @@
 					continue;
 				}
                 
-            var gscore = current.f+1;  
-            var hscore = heuristic(neighbor, end);
-             var fscore = gscore + hscore;
-                current = open.pop();
+            var gscore = currentNode.f+1;  
                 
+                
+                if(!open.neighbor)
+                {
+                    
+                map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);
+                        open.push(neighbor);
+                }
+                
+                 map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
                 
             }
-      }
+          }
+      
 
                 
     
