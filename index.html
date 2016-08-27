@@ -33,7 +33,7 @@
                             
 
                     }
-              console.log(map[x][y]);
+            //  console.log(map[x][y]);
               var start = {};
               while(map[x][y].wall==1)
                   {
@@ -41,6 +41,7 @@
         y = Math.floor(((Math.random() * 319) + 0)/32); 
                       start.x=x;
                       start.y=y;
+                    start.wall=2;
                   }
               ctx.fillStyle = "rgb(230,255,0)";
               ctx.fillRect (x*32, y*32, 32, 32);
@@ -70,22 +71,26 @@
     function neighbors(map, node) {
         
         var position = [];
-        x = node.x;
-        y = node.y;
+    var x = node.x;
+    var y = node.y;
         
-         if (map[x - 1][y]) {
+         if (map[x-1] && map[x - 1][y]) {
         position.push(map[x - 1][y]);
         }
-        if (map[x + 1][y]) {
+        if (map[x+1] && map[x + 1][y]) {
             position.push(map[x + 1][y]);
         }
-        if (map[x][y - 1]) {
+        if (map[x][y-1] && map[x][y - 1]) {
             position.push(map[x][y - 1]);
         }
-        if (map[x][y + 1]) {
-            pisition.push(map[x][y + 1]);
+        if (map[x][y+1] && map[x][y + 1]) {
+            position.push(map[x][y + 1]);
         }
-        
+        console.log(position[0]);
+        console.log(position[1]);
+        console.log(position[2]);
+        console.log(position[3]);
+
         return position;
     }
       
@@ -96,6 +101,9 @@
           
           open.push(start);
           map[start.x][start.y].f = 0;
+         // console.log(map[start.x][start.y]);
+        //  console.log(end);
+        //  console.log(open[0]);
           
           while(open.length>0){
               var best = 0;
@@ -104,21 +112,32 @@
                     
                         best = i; 
                 }
-			}
+			
 			var currentNode = open[best];
+                              
+                		if(currentNode == end) {
+				var curr = currentNode;
+				var path = [];
+				while(curr.parent) {
+					path.push(curr);
+					curr = curr.parent;
+				}
+                            
+				 drawpath(path.reverse());
+			}
           
                 open.pop(currentNode);
                 closed.push(currentNode);
-          var neighbors = neighbors(map, current)
+          var getneighbors = neighbors(map, currentNode);
           
-          	for(var i=0; i<neighbors.length;i++) {
-				var neighbor = neighbors[i];
+          	for(var i=0; i<=getneighbors.length;i++) {
+				var neighbor = getneighbors[i];
 				if(closed.neighbor || neighbor.wall==1) {
 					continue;
 				}
                 
-            var gscore = currentNode.f+1;  
-                
+                  var gscore = currentNode.f+1;  
+
                 
                 if(!open.neighbor)
                 {
@@ -128,9 +147,22 @@
                 }
                 
                  map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
+                 map[neighbor.x][neighbor.y].parent = currentNode;
                 
             }
           }
+          return [];
+          }
+      function drawpath(map){
+          
+          for(var i=0; i<=map.length; i++)
+              {
+         // if(map[x][y].type==0)
+          ctx2.fillStyle = "rgb(175,238,238)";
+          ctx.fillRect (x*32, y*32, 32, 32);
+              }
+            
+      }
       
 
                 
