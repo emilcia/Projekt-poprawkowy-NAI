@@ -66,104 +66,138 @@
       
           }
       
-     // draw();
       
     function neighbors(map, node) {
         
         var position = [];
     var x = node.x;
     var y = node.y;
+    var g = node.g;
     
         if(x-1>=0){
-             if(map[x-1][y].wall==0)
+             if(map[x-1][y].wall!=1 )
                  {
+            
+         //map[x-1][y].g = map[x][y].g + 1; 
         position.push(map[x - 1][y]);
+                     
                  }
         }
         if(x+1<=9){
-        if (map[x+1][y].wall==0) {
+        if (map[x+1][y].wall!=1 ) {
+            
+            //map[x+1][y].g = map[x][y].g + 1; 
             position.push(map[x + 1][y]);
         }
         }
         if(y-1>=0){
-        if (map[x][y-1].wall==0) {
+        if (map[x][y-1].wall!=1 ) {
+            
+           // map[x][y-1].g = map[x][y].g + 1; 
             position.push(map[x][y - 1]);
         }
         }
         if(y+1<=9){
-        if (map[x][y+1].wall==0) {
+        if (map[x][y+1].wall!=1 ) {
+            
+         //   map[x][y+1].g = map[x][y].g + 1;
             position.push(map[x][y + 1]);
         }
         }
-           //console.log(map[x-1][y]);
+       // console.log(position[2]);
         return position;
     }
       
       function pathFinding(map, start, end) {
           
+         for(var x = 0; x<10; x++)
+              {
+                  for(var y = 0; y<10; y++)
+                      {
+                       map[x][y].g = 0;
+                       // map[x][y].f=0;
+                    //    map[x][y].h =0;
+                         // map[x][y].parent = null;
+              }
+      }
+          
+          
+          
           var open = [];
           var closed = [];
           
              open.push(start);
-         open[0].f = 0;
+         open[0].g = 0;
+          open[0].f = 0;
+          open[0].h=heuristic(start, end);
+        //map[start.x][start.y].g = 0;
           
-
-
-         // console.log(map[start.x][start.y]);
-        //  console.log(end);
-    // console.log(open[0]);
           
           while(open.length>0){
               var best = 0;
-              for(var i=0; i<open.length; i++)
+              for(var i=0; i<open.length; i++){
               	if(open[i].f < open[best].f) { 
                     
                         best = i; 
                 }
-			
+              }
 			var currentNode = open[best];
+
+                      var ctx = canvas.getContext("2d");
+
+                   ctx.fillStyle = "rgb(175,238,238)";
+                   ctx.fillRect (currentNode.x*32, currentNode.y*32, 32, 32);
                               
-                		if(currentNode == end) {
+                		if(currentNode.x == end.x && currentNode.y == end.y) {
 				var curr = currentNode;
+                        console.log("kupa");
 				var path = [];
 				while(curr.parent) {
 					path.push(curr);
 					curr = curr.parent;
+                   // console.log("end");
 				}
                             
 				return path.reverse();
 			}
           
-                open.pop(currentNode);
+                currentNode = open.pop();
                 closed.push(currentNode);
           var getneighbors = neighbors(map, currentNode);
           
-              console.log(getneighbors.length);
-
           	for(var i=0; i<getneighbors.length; i++) {
+                
 				var neighbor = getneighbors[i];
-                  //  searchnode(open, neighbor);
-                   // console.log(neighbor);
-
-				if(!searchnode(open, neighbor) || neighbor.wall !== 0) {
+				if(searchnode(closed, neighbor)) {
                     
-					continue;
+				continue;
+                    
 				}
                 
-                  var gscore = currentNode.f+1;  
-
+                 var gscore = currentNode.g+1;  
+                console.log(gscore);
+                var bestscore = false;
                 
                 if(!searchnode(open, neighbor))
                 {
                     
-                map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);
-                        open.push(neighbor);
+                    bestscore=true;
+                    map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);                        open.push(neighbor);
+
                 }
-                
+              /*  else if(gscore < (map[neighbor.x][neighbor.y].g)) {
+					
+					bestscore = true;
+                        }*/
+                if(bestscore)
+                    {
                  map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
-                 map[neighbor.x][neighbor.y].parent = currentNode;
-                
-            }
+                  map[neighbor.x][neighbor.y].parent = currentNode;
+                        map[neighbor.x][neighbor.y].g = gscore;
+                    }
+                 //console.log(neighbor);
+            }                
+
           }
           return [];
           }
