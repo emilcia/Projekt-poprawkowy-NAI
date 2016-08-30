@@ -72,7 +72,7 @@
         var position = [];
     var x = node.x;
     var y = node.y;
-    var g = node.g;
+  //  var g = node.g;
     
         if(x-1>=0){
              if(map[x-1][y].wall!=1 )
@@ -115,9 +115,9 @@
                   for(var y = 0; y<10; y++)
                       {
                        map[x][y].g = 0;
-                       // map[x][y].f=0;
-                    //    map[x][y].h =0;
-                         // map[x][y].parent = null;
+                      // map[x][y].f=0;
+                       map[x][y].h =0;
+                     map[x][y].parent = null;
               }
       }
           
@@ -127,44 +127,59 @@
           var closed = [];
           
              open.push(start);
-         open[0].g = 0;
-          open[0].f = 0;
-          open[0].h=heuristic(start, end);
+          open[0].g = 0;
+          //open[0].f = 0;
+          //open[0].h=heuristic(start, end);
         //map[start.x][start.y].g = 0;
           
           
           while(open.length>0){
               var best = 0;
+              console.log("ilosc w open ",open.length);
               for(var i=0; i<open.length; i++){
-              	if(open[i].f < open[best].f) { 
-                    
+                  console.log("punkt:",open[i].x,",",open[i].y,", koszt f:", open[i].f);
+                 if(!open[i].f)console.log("blad w: ",open[i].x,", ",open[i].y);
+                  console.log("----------");
+              	if(open[i].f <= open[best].f) { 
+
                         best = i; 
                 }
+                  
               }
+              //console.log("koniec petli");
+              //console.log(open[best].f);
+              console.log("--------------------------------------------------");
 			var currentNode = open[best];
+              open[best].f=9999;
 
-                      var ctx = canvas.getContext("2d");
-
-                   ctx.fillStyle = "rgb(175,238,238)";
-                   ctx.fillRect (currentNode.x*32, currentNode.y*32, 32, 32);
+                   
                               
-                		if(currentNode.x == end.x && currentNode.y == end.y) {
+                		if((currentNode.x === end.x) && (currentNode.y === end.y)) {
 				var curr = currentNode;
-                        console.log("kupa");
+                console.log("kupa");
 				var path = [];
 				while(curr.parent) {
 					path.push(curr);
 					curr = curr.parent;
                    // console.log("end");
 				}
-                            
-				return path.reverse();
+                      var ctx = canvas.getContext("2d");
+                                
+                   ctx.fillStyle = "rgb(175,238,238)";
+                            for(var i=1; i<path.length; i++){
+                   ctx.fillRect (path[i].x*32, path[i].y*32, 32, 32);         
+                        }
+                            return 0;
 			}
           
-                currentNode = open.pop();
+                //console.log(open.length);
+                console.log("wybrano:",currentNode.x,",",currentNode.y);
+
                 closed.push(currentNode);
           var getneighbors = neighbors(map, currentNode);
-          
+                //console.log("sasiedi");
+                //console.log(getneighbors.length);
+
           	for(var i=0; i<getneighbors.length; i++) {
                 
 				var neighbor = getneighbors[i];
@@ -175,7 +190,7 @@
 				}
                 
                  var gscore = currentNode.g+1;  
-                console.log(gscore);
+                //console.log(gscore);
                 var bestscore = false;
                 
                 if(!searchnode(open, neighbor))
@@ -194,23 +209,26 @@
                  map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
                   map[neighbor.x][neighbor.y].parent = currentNode;
                         map[neighbor.x][neighbor.y].g = gscore;
+                                        // console.log(neighbor);
+
                     }
-                 //console.log(neighbor);
             }                
 
           }
           return [];
           }
-      function drawpath(map){
+   /*   function drawpath(map){
           
           for(var i=0; i<=map.length; i++)
               {
          // if(map[x][y].type==0)
-          ctx2.fillStyle = "rgb(175,238,238)";
-          ctx.fillRect (x*32, y*32, 32, 32);
-              }
-            
-      }
+          var ctx = canvas.getContext("2d");
+
+          ctx.fillStyle = "rgb(175,238,238)";
+          ctx.fillRect (x*32, y*32, 32, 32);      
+        }
+      }*/
+      
       function searchnode(map, node)
       {
           for(var i=0; i<=map.length; i++)
