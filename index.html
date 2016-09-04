@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
  <head>
+     <style>
+        p {
+     margin: 20px 125px
+}
+     </style>
   <meta charset="utf-8"/>
   <script type="application/javascript">
     function draw() {
@@ -20,7 +25,7 @@
             }
 
     
-              for(var licznik=0; licznik<=15; licznik++)
+              for(var licznik=0; licznik<=20; licznik++)
                     {
                       
           var x = Math.floor(((Math.random() * 319) + 0)/32);
@@ -33,9 +38,16 @@
                             
 
                     }
-            //  console.log(map[x][y]);
+        
+                      var end = {};
+              end.x = 3;
+              end.y = 3;
+                ctx.fillStyle = "rgb(51,0,255)";
+              ctx.fillRect (end.x*32, end.y*32, 32, 32);
+                map[end.x][end.y].wall = 3;
+        
               var start = {};
-              while(map[x][y].wall==1)
+              while(map[x][y].wall!=0)
                   {
         x = Math.floor(((Math.random() * 319) + 0)/32);
         y = Math.floor(((Math.random() * 319) + 0)/32); 
@@ -45,14 +57,8 @@
                   }
               ctx.fillStyle = "rgb(230,255,0)";
               ctx.fillRect (x*32, y*32, 32, 32);
-             map[x][y] = {'x':start.x, 'y':start.y, 'wall':2};
-              
-              var end = {};
-              end.x = 1;
-              end.y = 1;
-                ctx.fillStyle = "rgb(51,0,255)";
-              ctx.fillRect (end.x*32, end.y*32, 32, 32);
-             map[x][y] = {'x':end.x, 'y':end.y, 'wall':3};
+            map[x][y].wall = 2;
+
               
          pathFinding(map, start, end);
               
@@ -72,65 +78,44 @@
         var position = [];
     var x = node.x;
     var y = node.y;
-  //  var g = node.g;
     
-        if(x-1>=0){
+        if((x-1)>=0){
              if(map[x-1][y].wall!=1 )
                  {
-            
-         //map[x-1][y].g = map[x][y].g + 1; 
-        position.push(map[x - 1][y]);
+                    position.push(map[x - 1][y]);
                      
                  }
         }
-        if(x+1<=9){
+        if((x+1)<=9){
         if (map[x+1][y].wall!=1 ) {
             
-            //map[x+1][y].g = map[x][y].g + 1; 
             position.push(map[x + 1][y]);
         }
         }
-        if(y-1>=0){
+        if((y-1)>=0){
         if (map[x][y-1].wall!=1 ) {
             
-           // map[x][y-1].g = map[x][y].g + 1; 
             position.push(map[x][y - 1]);
         }
         }
-        if(y+1<=9){
+        if((y+1)<=9){
         if (map[x][y+1].wall!=1 ) {
             
-         //   map[x][y+1].g = map[x][y].g + 1;
             position.push(map[x][y + 1]);
         }
         }
-       // console.log(position[2]);
         return position;
     }
       
       function pathFinding(map, start, end) {
-          
-         for(var x = 0; x<10; x++)
-              {
-                  for(var y = 0; y<10; y++)
-                      {
-                       map[x][y].g = 0;
-                      // map[x][y].f=0;
-                       map[x][y].h =0;
-                     map[x][y].parent = null;
-              }
-      }
-          
-          
+           
           
           var open = [];
           var closed = [];
-          
+        //  map[end.x][end.y].f = 0;
              open.push(start);
           open[0].g = 0;
-          //open[0].f = 0;
-          //open[0].h=heuristic(start, end);
-        //map[start.x][start.y].g = 0;
+        open[0].f = 0;
           
           
           while(open.length>0){
@@ -138,30 +123,32 @@
               console.log("ilosc w open ",open.length);
               for(var i=0; i<open.length; i++){
                   console.log("punkt:",open[i].x,",",open[i].y,", koszt f:", open[i].f);
-                 if(!open[i].f)console.log("blad w: ",open[i].x,", ",open[i].y);
-                  console.log("----------");
               	if(open[i].f <= open[best].f) { 
 
                         best = i; 
                 }
                   
               }
-              //console.log("koniec petli");
-              //console.log(open[best].f);
               console.log("--------------------------------------------------");
 			var currentNode = open[best];
-              open[best].f=9999;
+              
+                    var ctx = canvas.getContext("2d");
+                                
+                   ctx.fillStyle = "rgba(200,200,200, 0.5)";
+                   ctx.fillRect (currentNode.x*32, currentNode.y*32, 32, 32);
+            var schowek = open[open.length-1];
+              open[open.length-1] = open[best];
+              open[best] = schowek;
+              open.pop();
 
-                   
-                              
-                		if((currentNode.x === end.x) && (currentNode.y === end.y)) {
-				var curr = currentNode;
+                             
+                		if((currentNode.x == end.x) && (currentNode.y == end.y)) {
+				var current = currentNode;
                 console.log("kupa");
 				var path = [];
-				while(curr.parent) {
-					path.push(curr);
-					curr = curr.parent;
-                   // console.log("end");
+				while(current.parent) {
+					path.push(current);
+					current = current.parent;
 				}
                       var ctx = canvas.getContext("2d");
                                 
@@ -172,13 +159,12 @@
                             return 0;
 			}
           
-                //console.log(open.length);
                 console.log("wybrano:",currentNode.x,",",currentNode.y);
 
                 closed.push(currentNode);
+              console.log("ilosc w closed ",closed.length);
+
           var getneighbors = neighbors(map, currentNode);
-                //console.log("sasiedi");
-                //console.log(getneighbors.length);
 
           	for(var i=0; i<getneighbors.length; i++) {
                 
@@ -190,44 +176,32 @@
 				}
                 
                  var gscore = currentNode.g+1;  
-                //console.log(gscore);
-                var bestscore = false;
                 
                 if(!searchnode(open, neighbor))
                 {
                     
-                    bestscore=true;
                     map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);                        open.push(neighbor);
+                    
+                         map[neighbor.x][neighbor.y].parent = currentNode;
+                  map[neighbor.x][neighbor.y].g = gscore;
+                 map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
 
                 }
-              /*  else if(gscore < (map[neighbor.x][neighbor.y].g)) {
-					
-					bestscore = true;
-                        }*/
-                if(bestscore)
-                    {
+                else if(gscore < (map[neighbor.x][neighbor.y].g)) {
+                    
+                         map[neighbor.x][neighbor.y].parent = currentNode;
+                  map[neighbor.x][neighbor.y].g = gscore;
                  map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
-                  map[neighbor.x][neighbor.y].parent = currentNode;
-                        map[neighbor.x][neighbor.y].g = gscore;
-                                        // console.log(neighbor);
-
-                    }
+					
+                        }
+       
             }                
 
           }
+          console.log("Nie znaleziono drogi");
           return [];
           }
-   /*   function drawpath(map){
-          
-          for(var i=0; i<=map.length; i++)
-              {
-         // if(map[x][y].type==0)
-          var ctx = canvas.getContext("2d");
 
-          ctx.fillStyle = "rgb(175,238,238)";
-          ctx.fillRect (x*32, y*32, 32, 32);      
-        }
-      }*/
       
       function searchnode(map, node)
       {
@@ -249,7 +223,8 @@
   </script>
  </head>
  <body>
-     <p onclick="draw()">Kliknij!</p>
+     <p><button type="button" onclick="draw()">Znajdz droge!</button>
+</p>
 
    <canvas id="canvas" width="320" height="320">
 </canvas>
