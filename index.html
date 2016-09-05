@@ -8,214 +8,211 @@
      </style>
   <meta charset="utf-8"/>
   <script type="application/javascript">
+    
     function draw() {
       var canvas = document.getElementById("canvas");
-      if (canvas.getContext) {
-        var ctx = canvas.getContext("2d");
+      
+        if (canvas.getContext) {
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "rgb(162,115,164)";
+            ctx.fillRect (0, 0, 320, 320);
+        }
           
-        ctx.fillStyle = "rgb(162,115,164)";
-       ctx.fillRect (0, 0, 320, 320);
-      }
-          
-                var map = [];
-                  for (var x = 0; x < 10; x++) {
-                        map[x] = [];
-        for (var y = 0; y < 10; y++) 
+        var map = [];
+        for (var x = 0; x < 10; x++) {
+            map[x] = [];
+            for (var y = 0; y < 10; y++) 
                 map[x][y] = {'x':x, 'y':y, 'wall':0};                      
-            }
+        }
 
     
-              for(var licznik=0; licznik<=20; licznik++)
-                    {
+        for(var licznik=0; licznik<=20; licznik++){
                       
-          var x = Math.floor(((Math.random() * 319) + 0)/32);
-          var y = Math.floor(((Math.random() * 319) + 0)/32); 
-                        
+            var x = Math.floor(((Math.random() * 319) + 0)/32);
+            var y = Math.floor(((Math.random() * 319) + 0)/32);        
                      
-           ctx.fillStyle = "rgb(0,0,0)";
+            ctx.fillStyle = "rgb(0,0,0)";
+            ctx.fillRect (x*32, y*32, 32, 32);
+            map[x][y] = {'x':x, 'y':y, 'wall':1};  
+
+        }
+        
+        var end = {};
+        end.x = 3;
+        end.y = 3;
+                
+        ctx.fillStyle = "rgb(51,0,255)";
+        ctx.fillRect (end.x*32, end.y*32, 32, 32);
+        map[end.x][end.y].wall = 3;
+        
+        var start = {};
+        
+        while(map[x][y].wall!=0){
+            
+            x = Math.floor(((Math.random() * 319) + 0)/32);
+            y = Math.floor(((Math.random() * 319) + 0)/32); 
+            start.x=x;
+            start.y=y;
+            start.wall=2;
+        }
+        
+        ctx.fillStyle = "rgb(230,255,0)";
         ctx.fillRect (x*32, y*32, 32, 32);
-                         map[x][y] = {'x':x, 'y':y, 'wall':1};
-                            
-
-                    }
-        
-                      var end = {};
-              end.x = 3;
-              end.y = 3;
-                ctx.fillStyle = "rgb(51,0,255)";
-              ctx.fillRect (end.x*32, end.y*32, 32, 32);
-                map[end.x][end.y].wall = 3;
-        
-              var start = {};
-              while(map[x][y].wall!=0)
-                  {
-        x = Math.floor(((Math.random() * 319) + 0)/32);
-        y = Math.floor(((Math.random() * 319) + 0)/32); 
-                      start.x=x;
-                      start.y=y;
-                    start.wall=2;
-                  }
-              ctx.fillStyle = "rgb(230,255,0)";
-              ctx.fillRect (x*32, y*32, 32, 32);
-            map[x][y].wall = 2;
-
+        map[x][y].wall = 2;
+  
+        pathFinding(map, start, end);
               
-         pathFinding(map, start, end);
-              
-          }
+    }
       
-          function heuristic(pos0, pos1) {
+    function heuristic(pos0, pos1) {
+        
         var dlX = Math.abs(pos1.x - pos0.x);
         var dlY = Math.abs(pos1.y - pos0.y);
-     var length = Math.floor(Math.sqrt((dlX * dlX) + (dlY * dlY)));
+        var length = Math.floor(Math.sqrt((dlX * dlX) + (dlY * dlY)));
+       
         return length;      
       
-          }
+    }
       
       
     function neighbors(map, node) {
         
         var position = [];
-    var x = node.x;
-    var y = node.y;
+        var x = node.x;
+        var y = node.y;
     
         if((x-1)>=0){
-             if(map[x-1][y].wall!=1 )
-                 {
-                    position.push(map[x - 1][y]);
-                     
-                 }
+            if(map[x-1][y].wall!=1){
+                position.push(map[x - 1][y]);
+            }
         }
+        
         if((x+1)<=9){
-        if (map[x+1][y].wall!=1 ) {
-            
-            position.push(map[x + 1][y]);
+            if (map[x+1][y].wall!=1) {
+                position.push(map[x + 1][y]);
+            }
         }
-        }
+        
         if((y-1)>=0){
-        if (map[x][y-1].wall!=1 ) {
-            
-            position.push(map[x][y - 1]);
+            if (map[x][y-1].wall!=1) { 
+                position.push(map[x][y - 1]);
+            }
         }
-        }
+        
         if((y+1)<=9){
-        if (map[x][y+1].wall!=1 ) {
-            
-            position.push(map[x][y + 1]);
+            if (map[x][y+1].wall!=1) {
+                position.push(map[x][y + 1]);
+            }
         }
-        }
+        
         return position;
     }
       
-      function pathFinding(map, start, end) {
+    function pathFinding(map, start, end) {
            
           
-          var open = [];
-          var closed = [];
-        //  map[end.x][end.y].f = 0;
-             open.push(start);
-          open[0].g = 0;
+        var open = [];
+        var closed = [];
+        open.push(start);
+        open[0].g = 0;
         open[0].f = 0;
           
           
-          while(open.length>0){
-              var best = 0;
-              console.log("ilosc w open ",open.length);
-              for(var i=0; i<open.length; i++){
-                  console.log("punkt:",open[i].x,",",open[i].y,", koszt f:", open[i].f);
+        while(open.length>0){
+            var best = 0;
+            
+            console.log("ilosc w open ",open.length);
+              
+            for(var i=0; i<open.length; i++){
+                
+                console.log("punkt:",open[i].x,",",open[i].y,", koszt f:", open[i].f);
+                
               	if(open[i].f <= open[best].f) { 
-
-                        best = i; 
+                    best = i; 
                 }
                   
-              }
-              console.log("--------------------------------------------------");
+            }
+            console.log("--------------------------------------------------");
+            
 			var currentNode = open[best];
               
-                    var ctx = canvas.getContext("2d");
-                                
-                   ctx.fillStyle = "rgba(200,200,200, 0.5)";
-                   ctx.fillRect (currentNode.x*32, currentNode.y*32, 32, 32);
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "rgba(200,200,200, 0.5)";
+            ctx.fillRect (currentNode.x*32, currentNode.y*32, 32, 32);
+            
             var schowek = open[open.length-1];
-              open[open.length-1] = open[best];
-              open[best] = schowek;
-              open.pop();
-
-                             
-                		if((currentNode.x == end.x) && (currentNode.y == end.y)) {
-				var current = currentNode;
-                console.log("kupa");
+            open[open.length-1] = open[best];
+            open[best] = schowek;
+            open.pop();
+      
+            if((currentNode.x == end.x) && (currentNode.y == end.y)) {
+                console.log("Znaleziono trase");
 				var path = [];
-				while(current.parent) {
-					path.push(current);
-					current = current.parent;
-				}
-                      var ctx = canvas.getContext("2d");
-                                
-                   ctx.fillStyle = "rgb(175,238,238)";
-                            for(var i=1; i<path.length; i++){
+                
+				while(currentNode.parent) {
+					path.push(currentNode);
+					currentNode = currentNode.parent;
+                }
+                
+                var ctx = canvas.getContext("2d");               
+                ctx.fillStyle = "rgb(175,238,238)";
+                
+                for(var i=1; i<path.length; i++){
                    ctx.fillRect (path[i].x*32, path[i].y*32, 32, 32);         
-                        }
-                            return 0;
+                }
+                return 0;
 			}
           
-                console.log("wybrano:",currentNode.x,",",currentNode.y);
+            console.log("wybrano:",currentNode.x,",",currentNode.y);
 
-                closed.push(currentNode);
-              console.log("ilosc w closed ",closed.length);
+            closed.push(currentNode);
+            console.log("ilosc w closed ",closed.length);
 
-          var getneighbors = neighbors(map, currentNode);
+            var getneighbors = neighbors(map, currentNode);
 
-          	for(var i=0; i<getneighbors.length; i++) {
-                
+          	for(var i=0; i<getneighbors.length; i++) {   
 				var neighbor = getneighbors[i];
-				if(searchnode(closed, neighbor)) {
-                    
-				continue;
-                    
+				
+                if(searchnode(closed, neighbor)) {  
+				    continue;
 				}
                 
-                 var gscore = currentNode.g+1;  
+                var gscore = currentNode.g+1;  
                 
-                if(!searchnode(open, neighbor))
-                {
+                if(!searchnode(open, neighbor)){
                     
-                    map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);                        open.push(neighbor);
-                    
-                         map[neighbor.x][neighbor.y].parent = currentNode;
-                  map[neighbor.x][neighbor.y].g = gscore;
-                 map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
-
+                    map[neighbor.x][neighbor.y].h = heuristic(neighbor, end);                    
+                    map[neighbor.x][neighbor.y].g = gscore;
+                    map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
+                    map[neighbor.x][neighbor.y].parent = currentNode;
+                    open.push(neighbor);
                 }
+                
                 else if(gscore < (map[neighbor.x][neighbor.y].g)) {
                     
-                         map[neighbor.x][neighbor.y].parent = currentNode;
-                  map[neighbor.x][neighbor.y].g = gscore;
-                 map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
+                    map[neighbor.x][neighbor.y].g = gscore;
+                    map[neighbor.x][neighbor.y].f = gscore + map[neighbor.x][neighbor.y].h;
+                    map[neighbor.x][neighbor.y].parent = currentNode;
 					
-                        }
+                }
        
             }                
 
           }
+        
           console.log("Nie znaleziono drogi");
           return [];
-          }
+        }
 
       
-      function searchnode(map, node)
-      {
-          for(var i=0; i<=map.length; i++)
-              {
-                  if(map[i] == node)
-                      {
+        function searchnode(map, node){
+            for(var i=0; i<=map.length; i++){
+                  if(map[i] == node){
                           return true;
-                      }
-                  
-              }
-          return false;
-          
-      }
+                  }
+            }
+            return false;
+        }
       
 
                 
